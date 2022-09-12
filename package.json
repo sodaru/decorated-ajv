@@ -1,6 +1,6 @@
 {
   "name": "decorated-ajv",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "AJV decorated with error handling and formats",
   "main": "./dist/cjs/index.js",
   "module": "./dist/index.js",
