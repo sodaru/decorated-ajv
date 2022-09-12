@@ -50,3 +50,9 @@ const standaloneValidator = getCompiledValidator(schema, ajvOptions); // ajvOpti
 ```
 
 Read more about standalone ajv validator [here](https://ajv.js.org/standalone.html)
+
+## Support
+
+This project is a part of Open Source Intitiative from [Sodaru Technologies](https://sodaru.com)
+
+Write an email to opensource@sodaru.com for queries on this project
