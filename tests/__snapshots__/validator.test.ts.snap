@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test getCompiledValidator getCompiledValidator 1`] = `
+Array [
+  Object {
+    "instancePath": "",
+    "keyword": "required",
+    "message": "must have required property 'attributes'",
+    "params": Object {
+      "missingProperty": "attributes",
+    },
+    "schemaPath": "#/required",
+  },
+]
+`;
+
+exports[`Test getCompiledValidator getCompiledValidator 2`] = `
+Array [
+  Object {
+    "instancePath": "/attributes/email",
+    "keyword": "errorMessage",
+    "message": "Enter a Valid Email Id",
+    "params": Object {
+      "errors": Array [
+        Object {
+          "emUsed": true,
+          "instancePath": "/attributes/email",
+          "keyword": "format",
+          "message": "must match format \\"email\\"",
+          "params": Object {
+            "format": "email",
+          },
+          "schemaPath": "#/properties/attributes/allOf/1/properties/email/format",
+        },
+      ],
+    },
+    "schemaPath": "#/properties/attributes/allOf/1/properties/email/errorMessage",
+  },
+]
+`;
+
+exports[`Test getCompiledValidator getCompiledValidator 3`] = `null`;
+
+exports[`Test getCompiledValidator validate with compiledSchema 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "attributes",
+      },
+    },
+    "message": "must have required property 'attributes'",
+    "path": "",
+  },
+]
+`;
+
+exports[`Test getCompiledValidator validate with compiledSchema 2`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {},
+    },
+    "message": "Enter a Valid Email Id",
+    "path": "attributes.email",
+  },
+]
+`;
+
+exports[`test for complex Schema internal match none of oneOf options 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "name",
+      },
+    },
+    "message": "must have required property 'name'",
+    "path": "challenge",
+  },
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "params",
+      },
+    },
+    "message": "must have required property 'params'",
+    "path": "challenge",
+  },
+]
+`;
+
+exports[`test for complex Schema internal partial match oneOf options 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "params",
+      },
+    },
+    "message": "must have required property 'params'",
+    "path": "challenge",
+  },
+]
+`;
+
+exports[`test for complex Schema match none of the oneOf options 1 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "type",
+      },
+    },
+    "message": "must have required property 'type'",
+    "path": "",
+  },
+]
+`;
+
+exports[`test for complex Schema match none of the oneOf options 2 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "allowedValues": Array [
+          "initiateAuth",
+          "respondToAuthChallenge",
+          "signup",
+          "confirmSignup",
+          "resendConfirmationCode",
+          "forgotPassword",
+          "confirmForgotPassword",
+        ],
+      },
+    },
+    "message": "must be equal to one of the allowed values",
+    "path": "type",
+  },
+]
+`;
+
+exports[`test for complex Schema partial match oneOf options 1 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "username",
+      },
+    },
+    "message": "must have required property 'username'",
+    "path": "",
+  },
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "flow",
+      },
+    },
+    "message": "must have required property 'flow'",
+    "path": "",
+  },
+]
+`;
+
+exports[`test for complex Schema partial match oneOf options 2 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "username",
+      },
+    },
+    "message": "must have required property 'username'",
+    "path": "",
+  },
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "flow",
+      },
+    },
+    "message": "must have required property 'flow'",
+    "path": "",
+  },
+  Object {
+    "context": Object {
+      "params": Object {
+        "additionalProperty": "challenge",
+      },
+    },
+    "message": "must NOT have additional properties",
+    "path": "",
+  },
+]
+`;
