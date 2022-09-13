@@ -8,6 +8,7 @@ AJV decorated with error handling and formats.
 > - added [ajv-errors](https://www.npmjs.com/package/ajv-errors)
 > - added `errorMessage` keyword to JSONSchema7 type from [@types/json-schema](https://www.npmjs.com/package/@types/json-schema)
 > - filter redundant errors
+> - Asynchronously load referenced schemas from web.
 
 ## Install
 

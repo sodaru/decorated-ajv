@@ -1,5 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Test JSON Validator validate for errorMessage at 1 level down 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {},
+    },
+    "message": "must be SLP::DynamoDb::Item",
+    "path": "Type",
+  },
+  Object {
+    "context": Object {
+      "params": Object {
+        "missingProperty": "TableName",
+      },
+    },
+    "message": "must have required property 'TableName'",
+    "path": "Properties",
+  },
+]
+`;
+
+exports[`Test JSON Validator validate for errorMessage at 2 level down 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {},
+    },
+    "message": "must have resource",
+    "path": "DependsOn",
+  },
+]
+`;
+
+exports[`Test JSON Validator validate for errorMessage at top 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {},
+    },
+    "message": "Must have Type and Properties",
+    "path": "",
+  },
+]
+`;
+
+exports[`Test JSON Validator validate for errorMessage for additional Properties 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {},
+    },
+    "message": "Additional property \\"me@example.com\\" is not allowed",
+    "path": "Properties.me@example.com",
+  },
+]
+`;
+
+exports[`Test JSON Validator validate for root error 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "type": "object",
+      },
+    },
+    "message": "must be object",
+    "path": "",
+  },
+]
+`;
+
+exports[`Test JSON Validator validate with chain 1`] = `
+Array [
+  Object {
+    "context": Object {
+      "params": Object {
+        "type": "object",
+      },
+    },
+    "message": "must be object",
+    "path": "",
+  },
+]
+`;
+
 exports[`Test getCompiledValidator getCompiledValidator 1`] = `
 Array [
   Object {

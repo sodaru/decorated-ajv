@@ -1,10 +1,11 @@
 import Ajv, { Options, ValidateFunction, ErrorObject } from "ajv";
 import addErrors from "ajv-errors";
 import addFormats from "ajv-formats";
-import { DataValidationCxt } from "ajv/dist/types";
+import { AnySchemaObject, DataValidationCxt } from "ajv/dist/types";
 import standaloneCode from "ajv/dist/standalone";
 import { JSONSchema7 } from "./JSONSchema";
 import { uniq } from "lodash";
+import fetch from "cross-fetch";
 
 export type Violation = {
   path: string;
@@ -23,32 +24,47 @@ export interface CompiledValidateFunction<T = unknown> {
   errors?: null | ErrorObject[];
 }
 
+const downloadSchemaFromWeb = async (url: string): Promise<AnySchemaObject> => {
+  const response = await fetch(url);
+  return await response.json();
+};
+
+const loadedSchemas: Record<string, AnySchemaObject> = {};
+
+const loadSchema: Options["loadSchema"] = async id => {
+  if (!loadedSchemas[id]) {
+    loadedSchemas[id] = await downloadSchemaFromWeb(id);
+  }
+  return loadedSchemas[id];
+};
+
 export const getAjv = (options?: Options): Ajv => {
-  const ajv = new Ajv({ ...options, allErrors: true });
+  const ajv = new Ajv({ loadSchema, ...options, allErrors: true });
   addFormats(ajv);
   addErrors(ajv);
   return ajv;
 };
 
-export const getValidator = <T = unknown>(
+export const getValidator = async <T = unknown>(
   schema: JSONSchema7,
   ajv?: Ajv
-): ValidateFunction<T> => {
+): Promise<ValidateFunction<T>> => {
   const _ajv = ajv || getAjv();
-  return _ajv.compile(schema);
+  const validator = await _ajv.compileAsync<T>(schema);
+  return validator;
 };
 
-export const getCompiledValidator = (
+export const getCompiledValidator = async (
   schema: JSONSchema7,
   options: Options = {}
-): string => {
+): Promise<string> => {
   const _options = { ...options };
   if (_options.code === undefined) {
     _options.code = {};
   }
   _options.code.source = true;
   const ajv = getAjv(_options);
-  const validate = getValidator(schema, ajv);
+  const validate = await getValidator(schema, ajv);
   const moduleCode = standaloneCode(ajv, validate);
   return moduleCode;
 };
@@ -58,13 +74,14 @@ export const getCompiledValidator = (
  * @param data
  * @param validate
  */
-export const validate = <T = unknown>(
+export const validate = async <T = unknown>(
   schema: JSONSchema7 | CompiledValidateFunction<T>,
   data: T,
   validate?: ValidateFunction<T>
-): Violation[] => {
+): Promise<Violation[]> => {
   const _validate =
-    validate || (typeof schema == "function" ? schema : getValidator(schema));
+    validate ||
+    (typeof schema == "function" ? schema : await getValidator(schema));
 
   if (!_validate(data)) {
     const violations = generateViolations(_validate.errors);

@@ -42,53 +42,43 @@ describe("Test JSON Validator", () => {
     ]);
   });
 
-  test("getValidator", () => {
-    const validate = getValidator({ type: "string" });
+  test("getValidator", async () => {
+    const validate = await getValidator({ type: "string" });
     expect(typeof validate).toEqual("function");
   });
 
-  test("validate", () => {
-    expect(validate({ type: "string" }, "this is awesome")).toEqual([]);
+  test("validate", async () => {
+    await expect(
+      validate({ type: "string" }, "this is awesome")
+    ).resolves.toEqual([]);
   });
 
-  test("validate for root error", () => {
-    try {
-      validate(schema, null);
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+  test("validate for root error", async () => {
+    await expect(validate(schema, null)).resolves.toMatchSnapshot();
   });
 
-  test("validate for errorMessage at top", () => {
-    try {
-      validate(schema, {});
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+  test("validate for errorMessage at top", async () => {
+    await expect(validate(schema, {})).resolves.toMatchSnapshot();
   });
 
-  test("validate for errorMessage at 1 level down", () => {
-    try {
-      validate(schema, { Type: "", Properties: {} });
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+  test("validate for errorMessage at 1 level down", async () => {
+    await expect(
+      validate(schema, { Type: "", Properties: {} })
+    ).resolves.toMatchSnapshot();
   });
 
-  test("validate for errorMessage at 2 level down", () => {
-    try {
+  test("validate for errorMessage at 2 level down", async () => {
+    await expect(
       validate(schema, {
         Type: "SLP::DynamoDb::Item",
         DependsOn: {},
         Properties: { TableName: "Table1" }
-      });
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+      })
+    ).resolves.toMatchSnapshot();
   });
 
-  test("validate for errorMessage for additional Properties", () => {
-    try {
+  test("validate for errorMessage for additional Properties", async () => {
+    await expect(
       validate(schema, {
         Type: "SLP::DynamoDb::Item",
         DependsOn: {
@@ -98,28 +88,24 @@ describe("Test JSON Validator", () => {
           TableName: "Table1",
           "me@example.com": "This is my email"
         }
-      });
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+      })
+    ).resolves.toMatchSnapshot();
   });
 
-  test("validate with chain", () => {
-    try {
+  test("validate with chain", async () => {
+    await expect(
       validate(
         null,
         "this is awesome",
-        getValidator(schema, getAjv({ strictTuples: false }))
-      );
-    } catch (e) {
-      expect(e.message).toMatchSnapshot();
-    }
+        await getValidator(schema, getAjv({ strictTuples: false }))
+      )
+    ).resolves.toMatchSnapshot();
   });
 });
 
 describe("Test getCompiledValidator", () => {
   test("getCompiledValidator", async () => {
-    const compiled = getCompiledValidator(schemaForCompile);
+    const compiled = await getCompiledValidator(schemaForCompile);
     expect(typeof compiled).toEqual("string");
 
     const compiledSchemaFilePath = join(__dirname, "compiledSchema.js");
@@ -159,15 +145,15 @@ describe("Test getCompiledValidator", () => {
 
     const compiledValidator = (await import(compiledSchemaFilePath)).default;
 
-    expect(validate(compiledValidator, {})).toMatchSnapshot();
+    await expect(validate(compiledValidator, {})).resolves.toMatchSnapshot();
 
-    expect(
+    await expect(
       validate(compiledValidator, {
         attributes: { name: "Raghavendra", email: "this_must_fail" }
       })
-    ).toMatchSnapshot();
+    ).resolves.toMatchSnapshot();
 
-    expect(
+    await expect(
       validate(compiledValidator, {
         attributes: {
           name: "Raghavendra",
@@ -175,7 +161,7 @@ describe("Test getCompiledValidator", () => {
           pic: "https://avatar.com/my-pic"
         }
       })
-    ).toEqual([]);
+    ).resolves.toEqual([]);
   });
 
   test("performance of compiled schema", async () => {
@@ -194,7 +180,7 @@ describe("Test getCompiledValidator", () => {
     const t1 = Date.now();
     compiledValidator(data);
     const t2 = Date.now();
-    validate(schemaForCompile, data);
+    await validate(schemaForCompile, data);
     const t3 = Date.now();
 
     const timeWithCompiled = t2 - t1;
@@ -208,36 +194,40 @@ describe("Test getCompiledValidator", () => {
 });
 
 describe("test for complex Schema", () => {
-  test("match none of the oneOf options 1", () => {
-    expect(validate(complexSchema, {})).toMatchSnapshot();
+  test("match none of the oneOf options 1", async () => {
+    await expect(validate(complexSchema, {})).resolves.toMatchSnapshot();
   });
 
-  test("match none of the oneOf options 2", () => {
-    expect(validate(complexSchema, { type: "aaaaa" })).toMatchSnapshot();
+  test("match none of the oneOf options 2", async () => {
+    await expect(
+      validate(complexSchema, { type: "aaaaa" })
+    ).resolves.toMatchSnapshot();
   });
 
-  test("partial match oneOf options 1", () => {
-    expect(validate(complexSchema, { type: "initiateAuth" })).toMatchSnapshot();
+  test("partial match oneOf options 1", async () => {
+    await expect(
+      validate(complexSchema, { type: "initiateAuth" })
+    ).resolves.toMatchSnapshot();
   });
 
-  test("partial match oneOf options 2", () => {
-    expect(
+  test("partial match oneOf options 2", async () => {
+    await expect(
       validate(complexSchema, { type: "initiateAuth", challenge: {} })
-    ).toMatchSnapshot();
+    ).resolves.toMatchSnapshot();
   });
 
-  test("internal match none of oneOf options", () => {
-    expect(
+  test("internal match none of oneOf options", async () => {
+    await expect(
       validate(complexSchema, {
         type: "respondToAuthChallenge",
         username: "fsadfd",
         challenge: {}
       })
-    ).toMatchSnapshot();
+    ).resolves.toMatchSnapshot();
   });
 
-  test("internal partial match oneOf options", () => {
-    expect(
+  test("internal partial match oneOf options", async () => {
+    await expect(
       validate(complexSchema, {
         type: "respondToAuthChallenge",
         username: "fsadfd",
@@ -245,6 +235,24 @@ describe("test for complex Schema", () => {
           name: "PASSWORD_VERIFIER"
         }
       })
-    ).toMatchSnapshot();
+    ).resolves.toMatchSnapshot();
   });
+});
+
+describe("Test validator with async schema load", () => {
+  test("test schema loaded from web", async () => {
+    await expect(
+      validate(
+        {
+          type: "object",
+          properties: {
+            inputs: {
+              $ref: "https://form-input-schema.json-schema.sodaru.com/schemas/index.json#/properties/inputs"
+            }
+          }
+        },
+        { inputs: { url: { type: "text" } } }
+      )
+    ).resolves.toEqual([]);
+  }, 20000);
 });
