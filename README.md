@@ -31,7 +31,7 @@ const ajv = getAjv(); // returns an ajv instanse with loaded ajv-errors and ajv-
 ```typescript
 import { getValidator } from "decorated-ajv";
 
-const validator = getValidator(schema, ajv); // ajv is optional
+const validator = await getValidator(schema, ajv); // ajv is optional
 ```
 
 ### Validate the data against a schema
@@ -39,7 +39,7 @@ const validator = getValidator(schema, ajv); // ajv is optional
 ```typescript
 import { validate, Violation } from "decorated-ajv";
 
-const violations: Violation = validate(schema, data, validator); // validator is optional, if provided schema is ignored
+const violations: Violation = await validate(schema, data, validator); // validator is optional, if provided schema is ignored
 ```
 
 ### Get Compiled Validator
@@ -47,7 +47,7 @@ const violations: Violation = validate(schema, data, validator); // validator is
 ```typescript
 import { getCompiledValidator } from "decorated-ajv";
 
-const standaloneValidator = getCompiledValidator(schema, ajvOptions); // ajvOptions is optional
+const standaloneValidator = await getCompiledValidator(schema, ajvOptions); // ajvOptions is optional
 ```
 
 Read more about standalone ajv validator [here](https://ajv.js.org/standalone.html)
